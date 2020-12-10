@@ -45,7 +45,7 @@ if not os.path.exists(COCO_MODEL_PATH):
 IMAGE_DIR = os.path.join(ROOT_DIR, "images")
 
 # Video file or camera to process - set this to 0 to use your webcam instead of a video file
-VIDEO_SOURCE = os.path.join(ROOT_DIR, "test-images/parking_video.mp4")
+VIDEO_SOURCE = os.path.join(ROOT_DIR, "test-images/horror.mp4")
 
 # Create a Mask-RCNN model in inference mode
 model = MaskRCNN(mode="inference", model_dir=MODEL_DIR, config=MaskRCNNConfig())
@@ -65,11 +65,36 @@ free_space_frames = 0
 # Have we sent an SMS alert yet?
 # sms_sent = False
 
+# ===========
+## some videowriter props
+sz = (int(video_capture.get(cv2.CAP_PROP_FRAME_WIDTH)),
+        int(video_capture.get(cv2.CAP_PROP_FRAME_HEIGHT)))
+
+fps = 20
+fourcc = cv2.VideoWriter_fourcc(*'mpeg')
+
+## open and set props
+vout = cv2.VideoWriter()
+vout.open('output.mp4',fourcc,fps,sz,True)
+
+# ======
+
+frameCounter = 0
+resultCounter = 0
+
 # Loop over each frame of video
 while video_capture.isOpened():
     success, frame = video_capture.read()
     if not success:
         break
+
+    if frameCounter <= 1 :
+        frameCounter += 1
+        continue
+
+    resultCounter += 1
+    frameCounter = 0
+
 
     # Convert the image from BGR color (which OpenCV uses) to RGB color
     rgb_image = frame[:, :, ::-1]
@@ -117,12 +142,12 @@ while video_capture.isOpened():
             # it by more than 0.15 using IoU
             if max_IoU_overlap < 0.15:
                 # Parking space not occupied! Draw a green box around it
-                cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 3)
+                cv2.rectangle(frame, (x1, y1), (x2, y2), (79, 121, 66), 3)
                 # Flag that we have seen at least one open space
                 free_space = True
             else:
                 # Parking space is still occupied - draw a red box around it
-                cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 0, 255), 1)
+                cv2.rectangle(frame, (x1, y1), (x2, y2), (34, 34, 178), 1)
 
             # Write the IoU measurement inside the box
             font = cv2.FONT_HERSHEY_DUPLEX
@@ -138,18 +163,21 @@ while video_capture.isOpened():
             free_space_frames = 0
 
         # If a space has been free for several frames, we are pretty sure it is really free!
-        if free_space_frames > 10:
+        # if free_space_frames > 10:
             # Write SPACE AVAILABLE!! at the top of the screen
-            font = cv2.FONT_HERSHEY_DUPLEX
-            cv2.putText(frame, f"SPACE AVAILABLE!", (10, 150), font, 3.0, (0, 255, 0), 2, cv2.FILLED)
+        #    font = cv2.FONT_HERSHEY_DUPLEX
+        #    cv2.putText(frame, f"SPACE AVAILABLE!", (10, 150), font, 3.0, (0, 255, 0), 2, cv2.FILLED)
 
         # Show the frame of video on the screen
-        cv2.imshow('Video', frame)
-        cv2.waitKey(0)
-    # Hit 'q' to quit
-    # if cv2.waitKey(1) & 0xFF == ord('q'):
-    #     break
+        #cv2.imshow('Video', frame)
+        #cv2.waitKey(0)
+        print("Frames = ", resultCounter)
+        vout.write(frame)
+
+
 
 # Clean up everything when finished
-# video_capture.release()
-# cv2.destroyAllWindows()
+
+vout.release()
+video_capture.release()
+cv2.destroyAllWindows()

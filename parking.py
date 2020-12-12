@@ -45,7 +45,7 @@ if not os.path.exists(COCO_MODEL_PATH):
 IMAGE_DIR = os.path.join(ROOT_DIR, "images")
 
 # Video file or camera to process - set this to 0 to use your webcam instead of a video file
-VIDEO_SOURCE = os.path.join(ROOT_DIR, "test-images/horror.mp4")
+VIDEO_SOURCE = os.path.join(ROOT_DIR, "test-images/input_1.mp4")
 
 # Create a Mask-RCNN model in inference mode
 model = MaskRCNN(mode="inference", model_dir=MODEL_DIR, config=MaskRCNNConfig())

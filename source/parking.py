@@ -180,4 +180,4 @@ while video_capture.isOpened():
 
 vout.release()
 video_capture.release()
-cv2.destroyAllWindows()
+#cv2.destroyAllWindows()

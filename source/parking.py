@@ -16,7 +16,7 @@ class MaskRCNNConfig(mrcnn.config.Config):
     IMAGES_PER_GPU = 1
     GPU_COUNT = 1
     NUM_CLASSES = 1 + 80  # COCO dataset has 80 classes + one background class
-    DETECTION_MIN_CONFIDENCE = 0.2
+    DETECTION_MIN_CONFIDENCE = 0.6
 
 
 # Filter a list of Mask R-CNN detection results to get only the detected cars / trucks
@@ -58,8 +58,6 @@ def notify_about_available_parking_space():
     # Load pre-trained model
     model.load_weights(COCO_MODEL_PATH, by_name=True)
 
-    # Have we sent an SMS alert yet?
-    # sms_sent = False
 
     # Load the video file we want to run detection on
     video_capture = cv2.VideoCapture(VIDEO_SOURCE)

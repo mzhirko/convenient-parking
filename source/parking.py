@@ -162,16 +162,6 @@ def notify_about_available_parking_space():
                 # If no spots are free, reset the count
                 free_space_frames = 0
 
-            # If a space has been free for several frames, we are pretty sure it is really free!
-            # if free_space_frames > 10:
-            # Write SPACE AVAILABLE!! at the top of the screen
-            #    font = cv2.FONT_HERSHEY_DUPLEX
-            #    cv2.putText(frame, f"SPACE AVAILABLE!", (10, 150), font, 3.0, (0, 255, 0), 2, cv2.FILLED)
-
-            # Show the frame of video on the screen
-            # cv2.imshow('Video', frame)
-            # cv2.waitKey(0)
-
             print("Frames = ", resultCounter)
             vout.write(frame)
 
